@@ -1,7 +1,7 @@
 package com.lcyy.hanzhong.dao;
 
-import com.project.demo.dao.base.BaseMapper;
-import com.project.demo.entity.Notice;
+import com.lcyy.hanzhong.dao.base.BaseMapper;
+import com.lcyy.hanzhong.entity.Notice;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.lcyy.hanzhong.dao;
 
-import com.project.demo.dao.base.BaseMapper;
-import com.project.demo.entity.Slides;
+import com.lcyy.hanzhong.dao.base.BaseMapper;
+import com.lcyy.hanzhong.entity.Slides;
 
 import java.util.List;
 
