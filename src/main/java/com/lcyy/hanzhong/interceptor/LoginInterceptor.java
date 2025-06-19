@@ -12,27 +12,27 @@ import java.io.IOException;
 /**
  * @author: dlwlrma
  * @data 2025年06月19日 21:27
- * @Description
+ * @Description 登录拦截器
  */
-
-@Slf4j
 public class LoginInterceptor implements HandlerInterceptor {
 
+    //判断用户是否登录
     private String tokenName = "x-auth-token";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader(this.tokenName);
-
         setHeader(request, response);
-        log.info("[请求接口] - {} , [请求类型] - {}",request.getRequestURL().toString(),request.getMethod());
         if (request.getRequestURL().toString().contains("/api/user/login")){
+            //登陆接口放行
             return true;
         }
         else if (request.getRequestURL().toString().contains("/api/user/state")){
+            //登陆状态放行
             return true;
         }
         else if (request.getRequestURL().toString().contains("/api/user/register")){
+            //注册接口放行
             return true;
         }
         if (token == null || "".equals(token)){
@@ -48,7 +48,6 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        //更新token
     }
 
     @Override
@@ -56,10 +55,11 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     private void failure(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        //处理未登录请求的失败响应
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         response.setStatus(401);
-//        response.getWriter().write("");
-        response.sendRedirect("https://www.baidu.com");
+        //定向到首页
+        response.sendRedirect("index.html");
     }
 
     private void setHeader(HttpServletRequest request, HttpServletResponse response) {

@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 /**
  * @author: dlwlrma
  * @data 2025年06月19日 21:21
- * @Description Web的配置类
+ * @Description Web的配置类，注册登录拦截器
  */
 @Configuration
 public class WebAppConfig implements WebMvcConfigurer {
