@@ -33,7 +33,6 @@ public class BaseController <E, S extends BaseService<E>> {
     @Setter
     protected S service;
 
-
     @PostMapping("/add")
     @Transactional
     public Map<String, Object> add(HttpServletRequest request) throws IOException {
@@ -62,6 +61,7 @@ public class BaseController <E, S extends BaseService<E>> {
         return success(1);
     }
 
+    //获取单个对象数据
     @RequestMapping("/get_obj")
     public Map<String, Object> obj(HttpServletRequest request) {
         Query select = service.select(service.readQuery(request), service.readConfig(request));
@@ -75,44 +75,49 @@ public class BaseController <E, S extends BaseService<E>> {
         }
     }
 
-
+    //分页查询
     @RequestMapping("/get_list")
     public Map<String, Object> getList(HttpServletRequest request) {
         Map<String, Object> map = service.selectToPage(service.readQuery(request), service.readConfig(request));
         return success(map);
     }
 
+    //列表分组查询
     @RequestMapping("/list_group")
     public Map<String, Object> listGroup(HttpServletRequest request) {
         Map<String, Object> map = service.selectToList(service.readQuery(request), service.readConfig(request));
         return success(map);
     }
 
+    //柱状图分组数据查询接口
     @RequestMapping("/bar_group")
     public Map<String, Object> barGroup(HttpServletRequest request) {
         Map<String, Object> map = service.selectBarGroup(service.readQuery(request), service.readConfig(request));
         return success(map);
     }
 
+    //计数查询接口，支持两种 URL 路径
     @RequestMapping(value = {"/count_group", "/count"})
     public Map<String, Object> count(HttpServletRequest request) {
         Query count = service.count(service.readQuery(request), service.readConfig(request));
         return success(count.getResultList());
     }
 
+    //求和统计接口，支持两种 URL 路径
     @RequestMapping(value = {"/sum_group", "/sum"})
     public Map<String, Object> sum(HttpServletRequest request) {
         Query count = service.sum(service.readQuery(request), service.readConfig(request));
         return success(count.getResultList());
     }
 
+    //平均值统计接口
     @RequestMapping(value = {"/avg_group", "/avg"})
     public Map<String, Object> avg(HttpServletRequest request) {
         Query count = service.avg(service.readQuery(request), service.readConfig(request));
         return success(count.getResultList());
     }
 
-
+    //文件上传
     @PostMapping("/upload")
     public Map<String, Object> upload(@RequestParam("file") MultipartFile file) {
         log.info("进入方法");
@@ -146,12 +151,14 @@ public class BaseController <E, S extends BaseService<E>> {
         return error(30000, "上传失败");
     }
 
+    //导入 Excel 数据到数据库
     @PostMapping("/import_db")
     public Map<String, Object> importDb(@RequestParam("file") MultipartFile file) throws IOException {
         service.importDb(file);
         return success(1);
     }
 
+    //导出数据为 Execl
     @RequestMapping("/export_db")
     public void exportDb(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HSSFWorkbook sheets = service.exportDb(service.readQuery(request), service.readConfig(request));

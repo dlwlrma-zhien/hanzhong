@@ -48,7 +48,13 @@ public class BaseService <E>{
         return entityManager.createNativeQuery(sql);
     }
 
-    //插入操作
+    /**
+     *
+     * @author dlwlrma
+     * @date 2025/6/20 15:31
+     * 使用字符串拼接构建 SQL 插入语句
+     * @return null
+     */
     public void insert(Map<String,Object> body){
         StringBuffer sql = new StringBuffer("INSERT INTO ");
         sql.append("`").append(table).append("`").append(" (");
@@ -255,6 +261,7 @@ public class BaseService <E>{
         return "";
     }
 
+    //将BufferedReader中读取 JSON 数据并转换为Map<String, Object>
     public Map<String,Object> readBody(BufferedReader reader){
         BufferedReader br = null;
         StringBuilder sb = new StringBuilder("");
@@ -281,6 +288,7 @@ public class BaseService <E>{
         return null;
     }
 
+    //从 HTTP 请求的查询字符串中解析参数
     public Map<String,String> readQuery(HttpServletRequest request){
         String queryString = request.getQueryString();
         if (queryString != null && !"".equals(queryString)) {
@@ -304,6 +312,7 @@ public class BaseService <E>{
         }
     }
 
+    //用于从 HTTP 请求中提取特定配置参数
     public Map<String,String> readConfig(HttpServletRequest request){
         Map<String,String> map = new HashMap<>();
         map.put(FindConfig.PAGE,request.getParameter(FindConfig.PAGE));
@@ -317,6 +326,7 @@ public class BaseService <E>{
         return map;
     }
 
+    // Excel 文件导入数据到数据库
     public void importDb(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
             return;
@@ -353,6 +363,7 @@ public class BaseService <E>{
         }
     }
 
+    //用于将数据库查询结果导出为 Excel 文件
     public HSSFWorkbook exportDb(Map<String,String> query,Map<String,String> config){
         Query select = select(query, config);
         List<Map<String,String>> resultList = select.getResultList();
@@ -372,6 +383,7 @@ public class BaseService <E>{
         return workbook;
     }
 
+    //通过 JSON 序列化和反序列化将实体对象转换为 Map，然后调用 insert 方法保存数据
     @Transactional
     public void save(E e){
         String s = JSONObject.toJSONString(e);
@@ -379,6 +391,7 @@ public class BaseService <E>{
         insert(map);
     }
 
+    //根据查询条件查找单个实体
     public E findOne(Map<String, String> map){
         try {
             Query select = select(map, new HashMap<>());
@@ -388,7 +401,7 @@ public class BaseService <E>{
         }
     }
 
-
+    //MD5 加密功能加密明文密码
     public String encryption(String plainText) {
         String re_md5 = new String();
         try {
@@ -418,7 +431,7 @@ public class BaseService <E>{
         return re_md5;
     }
 
-
+    //将驼峰命名转换为下划线命名
     public static String humpToLine(String str) {
         if (str == null) {
             return null;
@@ -442,7 +455,7 @@ public class BaseService <E>{
         }
     }
 
-
+    //将 JSONObject 中的所有键从驼峰命名转换为下划线命名，并递归处理嵌套的 JSON 对象和数组。
     public JSONObject covertObject(JSONObject object) {
         if (object == null) {
             return null;
@@ -465,6 +478,7 @@ public class BaseService <E>{
         return newObject;
     }
 
+    //递归转换 JSONArray 中的所有元素，将其中包含的 JSONObject 的键从驼峰命名转换为下划线命名。
     public JSONArray covertArray(JSONArray array) {
         if (array == null) {
             return null;
@@ -483,6 +497,4 @@ public class BaseService <E>{
         }
         return newArray;
     }
-
-
 }
