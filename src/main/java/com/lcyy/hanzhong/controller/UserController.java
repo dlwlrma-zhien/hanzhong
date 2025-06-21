@@ -10,14 +10,13 @@ import com.lcyy.hanzhong.service.UserGroupService;
 import com.lcyy.hanzhong.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +92,7 @@ public class UserController extends BaseController<User, UserService> {
         return error(400,"请重新操作");
     }
 
+    //登录
     @PostMapping("/login")
     public Map<String, Object> login(@RequestBody Map<String,String> data, HttpServletRequest request){
         String username = data.get("username");
@@ -170,5 +170,104 @@ public class UserController extends BaseController<User, UserService> {
         } else {
             return error(30000, "账号或密码不正确");
         }
+    }
+
+    //修改密码
+    @PostMapping("change_password")
+    public Map<String,Object> change_password(@RequestBody Map<String,String> data,HttpServletRequest request){
+        // 根据Token获取UserId
+        String token = request.getHeader("x-auth-token");
+        Integer userId = tokenGetUserId(token);
+        // 根据UserId和旧密码获取用户
+        Map<String, String> query = new HashMap<>();
+        String o_password = data.get("o_password");
+        query.put("user_id" ,String.valueOf(userId));
+        query.put("password" ,service.encryption(o_password));
+        Query ret = service.count(query, service.readConfig(request));
+        List list = ret.getResultList();
+        Object s = list.get(0);
+        int count = Integer.parseInt(list.get(0).toString());
+        if(count > 0){
+            // 修改密码
+            Map<String,Object> form = new HashMap<>();
+            form.put("password",service.encryption(data.get("password")));
+            service.update(query,service.readConfig(request),form);
+            return success(1);
+        }
+        return error(10000,"密码修改失败！");
+    }
+
+    //获取登录用户ID
+    public Integer tokenGetUserId(String token) {
+        log.info("[获取的token] {}",token);
+        // 根据登录态获取用户ID
+        if(token == null || "".equals(token)){
+            return 0;
+        }
+        Map<String, String> query = new HashMap<>(16);
+        query.put("token", token);
+        AccessToken byToken = tokenService.findOne(query);
+        if(byToken == null){
+            return 0;
+        }
+        return byToken.getUser_id();
+    }
+
+    //登陆状态
+    @GetMapping("state")
+    public Map<String,Object> state(HttpServletRequest request){
+        JSONObject ret = new JSONObject();
+        // 获取状态
+        String token = request.getHeader("x-auth-token");
+
+        // 根据登录态获取用户ID
+        Integer userId = tokenGetUserId(token);
+
+        log.info("[返回userId] {}",userId);
+        if(userId == null || userId == 0){
+            return error(10000,"用户未登录!");
+        }
+
+        // 根据用户ID获取用户
+        Map<String,String> query = new HashMap<>();
+        query.put("user_id" ,String.valueOf(userId));
+
+        // 根据用户ID获取
+        Query select = service.select(query,service.readConfig(request));
+        List resultList = select.getResultList();
+        if (resultList.size() > 0) {
+            JSONObject user = JSONObject.parseObject(JSONObject.toJSONString(resultList.get(0)));
+            user.put("token",token);
+            ret.put("obj",user);
+            return success(ret);
+        } else {
+            return error(10000,"用户未登录!");
+        }
+    }
+
+    //已登陆状态退出登录
+    @GetMapping("quit")
+    public Map<String, Object> quit(HttpServletRequest request) {
+        String token = request.getHeader("x-auth-token");
+        JSONObject ret = new JSONObject();
+        Map<String, String> query = new HashMap<>(16);
+        query.put("token", token);
+        try{
+            tokenService.delete(query,service.readConfig(request));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return success("退出登录成功！");
+    }
+
+    //添加用户方法
+    @PostMapping("/add")
+    @Transactional
+    @Override
+    public Map<String, Object> add(HttpServletRequest request) throws IOException {
+        Map<String,Object> map = service.readBody(request.getReader());
+        map.put("password",service.encryption(String.valueOf(map.get("password"))));
+        service.insert(map);
+        return success(1);
     }
 }
