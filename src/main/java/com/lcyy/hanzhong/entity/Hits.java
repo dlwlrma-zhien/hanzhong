@@ -28,7 +28,7 @@ public class Hits implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "hits_id")
-    private Integer praiseId;
+    private Integer hitsId;
 
     /**
      * 访问人：
