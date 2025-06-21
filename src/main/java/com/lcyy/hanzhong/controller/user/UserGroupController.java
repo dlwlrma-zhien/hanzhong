@@ -1,8 +1,8 @@
-package com.lcyy.hanzhong.controller;
+package com.lcyy.hanzhong.controller.user;
 
 import com.lcyy.hanzhong.controller.base.BaseController;
 import com.lcyy.hanzhong.entity.UserGroup;
-import com.lcyy.hanzhong.service.UserGroupService;
+import com.lcyy.hanzhong.service.user.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

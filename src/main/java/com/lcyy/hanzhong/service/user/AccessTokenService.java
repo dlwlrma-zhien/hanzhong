@@ -1,4 +1,4 @@
-package com.lcyy.hanzhong.service;
+package com.lcyy.hanzhong.service.user;
 
 import com.lcyy.hanzhong.entity.AccessToken;
 import com.lcyy.hanzhong.service.base.BaseService;

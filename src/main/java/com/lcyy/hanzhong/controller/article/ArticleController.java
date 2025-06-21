@@ -1,8 +1,8 @@
-package com.lcyy.hanzhong.controller;
+package com.lcyy.hanzhong.controller.article;
 
 import com.lcyy.hanzhong.controller.base.BaseController;
 import com.lcyy.hanzhong.entity.Article;
-import com.lcyy.hanzhong.service.ArticleService;
+import com.lcyy.hanzhong.service.article.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package com.lcyy.hanzhong.service;
+package com.lcyy.hanzhong.service.article;
 
 import com.lcyy.hanzhong.entity.Article;
 import com.lcyy.hanzhong.service.base.BaseService;

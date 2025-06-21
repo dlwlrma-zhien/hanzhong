@@ -1,13 +1,13 @@
-package com.lcyy.hanzhong.controller;
+package com.lcyy.hanzhong.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lcyy.hanzhong.controller.base.BaseController;
 import com.lcyy.hanzhong.entity.AccessToken;
 import com.lcyy.hanzhong.entity.User;
 import com.lcyy.hanzhong.entity.UserGroup;
-import com.lcyy.hanzhong.service.AccessTokenService;
-import com.lcyy.hanzhong.service.UserGroupService;
-import com.lcyy.hanzhong.service.UserService;
+import com.lcyy.hanzhong.service.user.AccessTokenService;
+import com.lcyy.hanzhong.service.user.UserGroupService;
+import com.lcyy.hanzhong.service.user.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
